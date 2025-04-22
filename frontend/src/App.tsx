@@ -14,8 +14,8 @@ function App() {
   );
 
   useEffect(() => {
-    // Set the backend URL with the new port
-    const backendUrl = "https://livestream-be.mfebriansyah.com";
+    // Use VITE_BACKEND_URL from environment variables
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     // Check if the backend is available
     fetch(`${backendUrl}/health`, {
@@ -59,7 +59,7 @@ function App() {
       .catch((err) => {
         console.error("Error connecting to backend:", err);
         setError(
-          "Could not connect to the video server. Please make sure the server is running."
+          "Could not connect to backend server. Please check your connection or try again later."
         );
         setIsLoading(false);
       });
