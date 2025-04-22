@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./App.css";
+import "./index.css";
 import SwitchableVideoPlayer from "./components/VideoPlayer/SwitchableVideoPlayer";
 import MultiCamView from "./components/MultiCamView/MultiCamView";
 import WebRTCPlayer from "./components/WebRTC/WebRTCPlayer";
@@ -67,53 +67,61 @@ function App() {
 
   const renderContent = () => {
     if (isLoading) {
-      return <div className="loading">Loading video stream...</div>;
+      return <div className="flex justify-center items-center h-96 text-xl">Loading video stream...</div>;
     }
 
     if (error) {
       return (
-        <div className="error">
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()}>Retry</button>
+        <div className="flex flex-col items-center justify-center h-96 text-red-500">
+          <p className="mb-4">{error}</p>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition">Retry</button>
         </div>
       );
     }
 
     switch (activeTab) {
       case "single":
-        return <SwitchableVideoPlayer videoUrl={videoUrl} />;
+        return <div className="flex justify-center"><SwitchableVideoPlayer videoUrl={videoUrl} /></div>;
       case "multi":
         return <MultiCamView videoUrls={videoUrls} />;
       case "webrtc":
-        return <WebRTCPlayer serverUrl="http://localhost:5001" />;
+        return <WebRTCPlayer serverUrl={import.meta.env.VITE_BACKEND_URL} />;
       default:
         return <SwitchableVideoPlayer videoUrl={videoUrl} />;
     }
   };
 
   return (
-    <div className="app-container">
-      <header>
-        <h1>Video Streaming App</h1>
-        <div className="tab-navigation">
+    <div className="min-h-screen flex flex-col bg-neutral-900 text-white font-sans">
+      <header className="bg-black bg-opacity-80 shadow-lg px-6 py-4 flex items-center justify-between">
+        <h1 className="text-3xl font-extrabold tracking-wider text-red-600">MyStream</h1>
+        <div className="flex gap-2">
           <button
-            className={activeTab === "single" ? "active" : ""}
+            className={`px-4 py-2 rounded ${activeTab === "single" ? "bg-red-600 text-white" : "bg-neutral-800 text-gray-200 hover:bg-red-600 hover:text-white transition"}`}
             onClick={() => setActiveTab("single")}
           >
             Single Video
           </button>
           <button
-            className={activeTab === "multi" ? "active" : ""}
+            className={`px-4 py-2 rounded ${activeTab === "multi" ? "bg-red-600 text-white" : "bg-neutral-800 text-gray-200 hover:bg-red-600 hover:text-white transition"}`}
             onClick={() => setActiveTab("multi")}
           >
             Multi Cam
           </button>
+          <button
+            className={`px-4 py-2 rounded ${activeTab === "webrtc" ? "bg-red-600 text-white" : "bg-neutral-800 text-gray-200 hover:bg-red-600 hover:text-white transition"}`}
+            onClick={() => setActiveTab("webrtc")}
+          >
+            WebRTC
+          </button>
         </div>
       </header>
 
-      <main>{renderContent()}</main>
+      <main className="flex-1 px-4 py-8">
+        {renderContent()}
+      </main>
 
-      <footer>
+      <footer className="bg-black bg-opacity-80 text-center py-4 text-gray-400">
         <p>Video Streaming Application - {new Date().getFullYear()}</p>
       </footer>
     </div>
