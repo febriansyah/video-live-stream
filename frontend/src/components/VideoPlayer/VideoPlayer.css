@@ -128,7 +128,7 @@
 
 .timestamp {
   position: absolute;
-  bottom: 60px;
+  top: 20px;
   left: 20px;
   color: rgba(255, 255, 255, 0.7);
   font-size: 14px;

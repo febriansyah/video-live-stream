@@ -1,5 +1,5 @@
-import React from 'react';
-import './VideoPlayer.css';
+import React from "react";
+import "./VideoPlayer.css";
 
 interface VideoOverlayProps {
   isPlaying: boolean;
@@ -14,23 +14,23 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
   isLoading,
   error,
   onRetry,
-  onPlayClick
+  onPlayClick,
 }) => {
   // Get current timestamp
   const timestamp = new Date().toLocaleTimeString();
-  
+
   return (
-    <div className={`video-overlay ${!isPlaying && !isLoading && !error ? 'show' : ''}`}>
+    <div
+      className={`video-overlay ${
+        !isPlaying && !isLoading && !error ? "show" : ""
+      }`}
+    >
       {/* Watermark */}
-      <div className="watermark">
-        Video Stream
-      </div>
-      
+      <div className="watermark">MyStream Watermark</div>
+
       {/* Timestamp */}
-      <div className="timestamp">
-        {timestamp}
-      </div>
-      
+      <div className="timestamp">{timestamp}</div>
+
       {/* Loading spinner */}
       {isLoading && (
         <div className="loading-spinner">
@@ -38,7 +38,7 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
           <p>Loading video...</p>
         </div>
       )}
-      
+
       {/* Error message */}
       {error && (
         <div className="error-message">
@@ -46,7 +46,7 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
           <button onClick={onRetry}>Retry</button>
         </div>
       )}
-      
+
       {/* Play button overlay */}
       {!isPlaying && !isLoading && !error && (
         <div className="play-button-overlay" onClick={onPlayClick}>
