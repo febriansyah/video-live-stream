@@ -61,93 +61,94 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl }) => {
         setUseWebGL(false);
         return;
       }
-      
-      glRef.current = gl as WebGLRenderingContext;
+      // Explicitly cast to WebGLRenderingContext for TypeScript
+      const webgl = gl as WebGLRenderingContext;
+      glRef.current = webgl;
       
       // Create shaders
-      const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-      const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+      const vertexShader = webgl.createShader(webgl.VERTEX_SHADER);
+      const fragmentShader = webgl.createShader(webgl.FRAGMENT_SHADER);
       
       if (!vertexShader || !fragmentShader) {
         throw new Error('Could not create shaders');
       }
       
-      gl.shaderSource(vertexShader, vertexShaderSource);
-      gl.shaderSource(fragmentShader, fragmentShaderSource);
+      webgl.shaderSource(vertexShader, vertexShaderSource);
+      webgl.shaderSource(fragmentShader, fragmentShaderSource);
       
-      gl.compileShader(vertexShader);
-      if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-        throw new Error('Vertex shader compilation failed: ' + gl.getShaderInfoLog(vertexShader));
+      webgl.compileShader(vertexShader);
+      if (!webgl.getShaderParameter(vertexShader, webgl.COMPILE_STATUS)) {
+        throw new Error('Vertex shader compilation failed: ' + webgl.getShaderInfoLog(vertexShader));
       }
       
-      gl.compileShader(fragmentShader);
-      if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-        throw new Error('Fragment shader compilation failed: ' + gl.getShaderInfoLog(fragmentShader));
+      webgl.compileShader(fragmentShader);
+      if (!webgl.getShaderParameter(fragmentShader, webgl.COMPILE_STATUS)) {
+        throw new Error('Fragment shader compilation failed: ' + webgl.getShaderInfoLog(fragmentShader));
       }
       
       // Create program
-      const program = gl.createProgram();
+      const program = webgl.createProgram();
       if (!program) {
         throw new Error('Could not create program');
       }
       
-      gl.attachShader(program, vertexShader);
-      gl.attachShader(program, fragmentShader);
-      gl.linkProgram(program);
+      webgl.attachShader(program, vertexShader);
+      webgl.attachShader(program, fragmentShader);
+      webgl.linkProgram(program);
       
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        throw new Error('Program linking failed: ' + gl.getProgramInfoLog(program));
+      if (!webgl.getProgramParameter(program, webgl.LINK_STATUS)) {
+        throw new Error('Program linking failed: ' + webgl.getProgramInfoLog(program));
       }
       
       programRef.current = program;
       
       // Create texture
-      const texture = gl.createTexture();
+      const texture = webgl.createTexture();
       if (!texture) {
         throw new Error('Could not create texture');
       }
       
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      webgl.bindTexture(webgl.TEXTURE_2D, texture);
+      webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_S, webgl.CLAMP_TO_EDGE);
+      webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_WRAP_T, webgl.CLAMP_TO_EDGE);
+      webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MIN_FILTER, webgl.LINEAR);
+      webgl.texParameteri(webgl.TEXTURE_2D, webgl.TEXTURE_MAG_FILTER, webgl.LINEAR);
       
       textureRef.current = texture;
       
       // Set up position buffer
-      const positionBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      const positionBuffer = webgl.createBuffer();
+      webgl.bindBuffer(webgl.ARRAY_BUFFER, positionBuffer);
+      webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array([
         -1.0, -1.0,
          1.0, -1.0,
         -1.0,  1.0,
          1.0,  1.0
-      ]), gl.STATIC_DRAW);
+      ]), webgl.STATIC_DRAW);
       
       // Set up texture coordinate buffer
-      const texCoordBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      const texCoordBuffer = webgl.createBuffer();
+      webgl.bindBuffer(webgl.ARRAY_BUFFER, texCoordBuffer);
+      webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array([
         0.0, 1.0,
         1.0, 1.0,
         0.0, 0.0,
         1.0, 0.0
-      ]), gl.STATIC_DRAW);
+      ]), webgl.STATIC_DRAW);
       
       // Store attribute locations
-      const positionLocation = gl.getAttribLocation(program, 'a_position');
-      const texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
+      const positionLocation = webgl.getAttribLocation(program, 'a_position');
+      const texCoordLocation = webgl.getAttribLocation(program, 'a_texCoord');
       
       // Set up position attribute
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-      gl.enableVertexAttribArray(positionLocation);
-      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+      webgl.bindBuffer(webgl.ARRAY_BUFFER, positionBuffer);
+      webgl.enableVertexAttribArray(positionLocation);
+      webgl.vertexAttribPointer(positionLocation, 2, webgl.FLOAT, false, 0, 0);
       
       // Set up texture coordinate attribute
-      gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-      gl.enableVertexAttribArray(texCoordLocation);
-      gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+      webgl.bindBuffer(webgl.ARRAY_BUFFER, texCoordBuffer);
+      webgl.enableVertexAttribArray(texCoordLocation);
+      webgl.vertexAttribPointer(texCoordLocation, 2, webgl.FLOAT, false, 0, 0);
     } catch (err) {
       console.error('WebGL initialization failed:', err);
       setUseWebGL(false);
@@ -227,20 +228,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl }) => {
       if (useWebGL && glRef.current && programRef.current && textureRef.current) {
         // WebGL rendering
         try {
-          const gl = glRef.current;
+          const webgl = glRef.current as WebGLRenderingContext;
           
-          gl.viewport(0, 0, canvas.width, canvas.height);
-          gl.clearColor(0, 0, 0, 0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
+          webgl.viewport(0, 0, canvas.width, canvas.height);
+          webgl.clearColor(0, 0, 0, 0);
+          webgl.clear(webgl.COLOR_BUFFER_BIT);
           
-          gl.useProgram(programRef.current);
-          gl.bindTexture(gl.TEXTURE_2D, textureRef.current);
+          webgl.useProgram(programRef.current);
+          webgl.bindTexture(webgl.TEXTURE_2D, textureRef.current);
           
           // Update texture with new video frame
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+          webgl.texImage2D(webgl.TEXTURE_2D, 0, webgl.RGBA, webgl.RGBA, webgl.UNSIGNED_BYTE, video);
           
           // Draw the rectangle (2 triangles)
-          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+          webgl.drawArrays(webgl.TRIANGLE_STRIP, 0, 4);
         } catch (err) {
           console.error('WebGL rendering error:', err);
           // Fall back to Canvas 2D on error
