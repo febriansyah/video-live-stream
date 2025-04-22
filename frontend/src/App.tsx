@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     // Set the backend URL with the new port
-    const backendUrl = "http://localhost:5001";
+    const backendUrl = "https://livestream-be.mfebriansyah.com";
 
     // Check if the backend is available
     fetch(`${backendUrl}/health`, {

@@ -4,6 +4,11 @@ import fs from 'fs';
 import path from 'path';
 import http from 'http';
 import { setupWebRTC } from './webrtc';
+import dotenv from 'dotenv';
+
+// Load environment variables
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+dotenv.config({ path: path.resolve(__dirname, `../${envFile}`) });
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -11,14 +16,15 @@ const PORT = process.env.PORT || 5001;
 // Create HTTP server
 const server = http.createServer(app);
 
+// Parse allowed origins from env
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+
 // Enable CORS for all routes
 app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps, curl requests)
     if (!origin) return callback(null, true);
-    
-    const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (allowedOrigins.length === 0 || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -90,9 +96,6 @@ app.get('/video/:id', (req: Request, res: Response) => {
       'Accept-Ranges': 'bytes',
       'Content-Length': chunksize,
       'Content-Type': 'video/mp4',
-      'Access-Control-Allow-Origin': ['http://localhost:5173', 'http://localhost:5174'],
-      'Access-Control-Allow-Headers': 'Range',
-      'Access-Control-Expose-Headers': 'Content-Range, Content-Length, Accept-Ranges'
     };
     
     res.writeHead(206, head);
@@ -102,9 +105,6 @@ app.get('/video/:id', (req: Request, res: Response) => {
     const head = {
       'Content-Length': fileSize,
       'Content-Type': 'video/mp4',
-      'Access-Control-Allow-Origin': ['http://localhost:5173', 'http://localhost:5174'],
-      'Access-Control-Allow-Headers': 'Range',
-      'Access-Control-Expose-Headers': 'Content-Range, Content-Length, Accept-Ranges'
     };
     
     res.writeHead(200, head);
